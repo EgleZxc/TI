@@ -180,18 +180,15 @@
 
         const alphabet = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
 
-        // Получаем порядковый номер буквы
         function ord(char) {
             return alphabet.indexOf(char.toUpperCase());
         }
 
-        // Получаем букву по порядковому номеру
         function char(number) {
             const idx = ((number % alphabet.length) + alphabet.length) % alphabet.length;
             return alphabet[idx];
         }
 
-        // Шифрование и дешифрование Виженера
         function vigenerCipher(key, text, isEncrypt) {
 
             function EncryptVigener(key, text) {
@@ -201,17 +198,14 @@
                 for (let i = 0; i < text.length; i++) {
                     const currentChar = text[i];
                     let curCharNum = 0;
-                    // если не символ алфавита пропускаем итерацию
                     if (ord(currentChar) === -1) {
                         result += currentChar;
                         continue;
                     }
-                    // итерируемся по ключевому слову
                     if (j < key.length) {
                         curCharNum = (ord(currentChar) + ord(key[j])) % alphabet.length;
                         j++;
                     }
-                    // итерируемся по исходному тексту слову
                     else {
                         while (j - key.length >= 0 && (!isNaN(parseInt(text[j - key.length])) || text[j - key.length] === ' ')) {
                             j++;
@@ -231,7 +225,6 @@
                 for (let i = 0; i < text.length; i++) {
                     const currentChar = text[i];
                     let curCharNum;
-                    // если не символ алфавита пропускаем итерацию
                     if (ord(currentChar) === -1) {
                         result += currentChar;
                         continue;
@@ -255,17 +248,14 @@
             return isEncrypt ? EncryptVigener(key, text) : DecryptVigener(key, text);
         }
 
-        // Шифрование и дешифрование методом столбцов
         function columnsMethod(key, key2, text, isEncrypt) {
             function formTextArray(size, text, key, index) {
                 let textLetters = new Array(size);
                 let j = 0;
                 for (let i = 0; i < size; i++) {
-                    // заполняем символами
                     if (index + j < text.length) {
                         textLetters[i] = text[index + j];
                     }
-                    // заполняем пустоту
                     else {
                         textLetters[i] = ' ';
                     }
@@ -285,7 +275,6 @@
                         textLetters
                     });
                 }
-                // сортируем ключевое слов
                 const sortedLetters = key.split('').sort(
                     (a, b) => {
                         return ord(a) - ord(b);
@@ -293,7 +282,6 @@
                 console.log(sortedLetters);
                 //
                 let result = "";
-                // переносим индекс в столбцы
                 for (let i = 0; i < sortedLetters.length; i++) {
                     const column = columns.find((column) => column.key === sortedLetters[i] && column.sortIndex === -1);
                     column.sortIndex = i;
@@ -313,28 +301,22 @@
                         textLetters: []
                     });
                 }
-                // сортируем ключевое слов
                 const sortedLetters = key.split('').sort(
                     (a, b) => {
                         return ord(a) - ord(b);
                     });
-                // востанавливаем состояние столбцов как было до шифрования
                 let j = 0;
                 for (let i = 0; i < sortedLetters.length; i++) {
-                    // получаем кусок строки в виде массива
                     const textLetters = text.substring(Math.min(j, text.length), Math.min(j + n, text.length)).split('');
-                    // если не хватило символов из строки добавляем пробелы
                     while (textLetters.length < n) {
                         textLetters.push(' ');
                     }
                     j += n;
-                    // определяем где он был до этого
                     const column = columns.find((column) => column.key === sortedLetters[i] && column.sortIndex === -1);
                     column.sortIndex = i;
                     column.textLetters = textLetters;
                     console.log(i, column.textLetters);
                 }
-                // востанавливаем исходную строку
                 let result = "";
                 for (let i = 0; i < n; i++) {
                     columns.forEach((column) => result += column.textLetters[i]);
